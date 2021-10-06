@@ -1,0 +1,27 @@
+{
+  "name": "idix-cli",
+  "version": "1.0.0-beta.2",
+  "description": "Provides useful tools for IDIX developers from the command line.",
+  "main": "cli.js",
+  "bin": {
+    "idix": "cli.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.idix.fr:thierryl/idix-cli.git"
+  },
+  "author": "Thierry Langlois <thierry.langlois@idix.fr>",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.22.0",
+    "chalk": "^4.1.2",
+    "configstore": "^6.0.0",
+    "promisify-child-process": "^4.1.1",
+    "prompts": "^2.4.1",
+    "yargs": "^17.2.1"
+  }
+}
