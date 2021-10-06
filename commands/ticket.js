@@ -29,8 +29,7 @@ command.execute = async () => {
   const { ticket_id } = await prompts({
     type: "number",
     name: "ticket_id",
-    message: "Redmine ticket ID",
-    initial: 51268
+    message: "Redmine ticket ID"
   });
 
   const ticket = await loadTicket(ticket_id, redmine_api_key);
