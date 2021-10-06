@@ -1,5 +1,5 @@
 {
-  "name": "idix-cli",
+  "name": "@idix/idix-cli",
   "version": "1.0.0-beta.2",
   "description": "Provides useful tools for IDIX developers from the command line.",
   "main": "cli.js",
@@ -7,12 +7,9 @@
     "idix": "cli.js"
   },
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.idix.fr:thierryl/idix-cli.git"
+    "url": "https://github.com/ThierryIDIX/IDIX-cli.git"
   },
   "author": "Thierry Langlois <thierry.langlois@idix.fr>",
   "license": "ISC",
