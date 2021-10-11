@@ -1,4 +1,5 @@
 import prompts from "prompts";
+import chalk from "chalk";
 import axios from "axios";
 import { spawn } from "promisify-child-process";
 import { Command, CommandResult, store } from "../core/index.js";
@@ -107,14 +108,9 @@ command.execute = async ({ inputs, options }) => {
 
   return new CommandResult(
     "success",
-    JSON.stringify(
-      {
-        "Working branch": working_branch,
-        "Merge request": mergeRequest.web_url
-      },
-      null,
-      2
-    )
+    `${chalk.bold("New branch:")} ${working_branch}\n${chalk.bold(
+      "Merge Request:"
+    )} ${mergeRequest.web_url}`
   );
 };
 

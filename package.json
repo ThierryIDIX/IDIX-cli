@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.22.0",
+    "boxen": "^6.2.0",
     "chalk": "^4.1.2",
     "configstore": "^6.0.0",
     "promisify-child-process": "^4.1.1",

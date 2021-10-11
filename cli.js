@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import yargs from "yargs";
-import chalk from "chalk";
+import boxen from "boxen";
 import commands from "./commands/index.js";
 
 const args = yargs(process.argv.slice(2)).argv;
@@ -20,15 +20,7 @@ const args = yargs(process.argv.slice(2)).argv;
   const { $0, _, ...options } = args;
 
   const result = await command.execute({ inputs, options });
-  const line = "-".repeat(process.stdout.columns);
-  const headerBg = result.isSuccess() ? "bgGreen" : "bgRed";
-  const headeColor = result.isSuccess() ? "black" : "white";
-  const lineColor = result.isSuccess() ? "green" : "red";
-  const headerText = result.isSuccess() ? " Success " : " Error ";
-  console.log(chalk[lineColor](line));
-  console.log(chalk.bold[headeColor][headerBg](headerText));
-  for (const message of result.messages) {
-    console.log(message);
-  }
-  console.log(chalk[lineColor](line));
+  const borderColor = result.isSuccess() ? "green" : "red";
+  const output = boxen(result.message, { padding: 1, borderColor });
+  console.log(output);
 })();

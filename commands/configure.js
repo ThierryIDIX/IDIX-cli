@@ -1,4 +1,5 @@
 import prompts from "prompts";
+import chalk from "chalk";
 import { Command, CommandResult, store } from "../core/index.js";
 
 const questions = [
@@ -42,8 +43,7 @@ command.execute = async () => {
 
   return new CommandResult(
     "success",
-    "Configuration :",
-    JSON.stringify(store.all, null, 2)
+    `${chalk.bold("Configuration")}\n${JSON.stringify(store.all, null, 2)}`
   );
 };
 

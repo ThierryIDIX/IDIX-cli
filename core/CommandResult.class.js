@@ -1,9 +1,9 @@
 const STATUS_CODES = ["success", "error", "info"];
 
 export default class CommandResult {
-  constructor(status, ...rest) {
+  constructor(status, message) {
     this.status = status;
-    this.messages = rest;
+    this.message = message;
     this.validate();
   }
 
