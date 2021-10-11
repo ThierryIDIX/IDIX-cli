@@ -49,10 +49,20 @@ command.execute = async () => {
   // determine base branch
   const guessedBranch = await determineBaseBranch();
   const { base_branch } = await prompts({
-    type: "text",
+    type: "select",
     name: "base_branch",
     message: "Git base branch",
-    initial: guessedBranch
+    choices: [
+      {
+        title: guessedBranch,
+        value: guessedBranch
+      },
+      {
+        title: "master",
+        value: "master"
+      }
+    ],
+    initial: 0
   });
 
   // create working branch
@@ -60,14 +70,19 @@ command.execute = async () => {
   const branchType = trackersMap[tracker.name];
   const branchPrefix = branchType ? `${branchType}/` : "";
   const workingBranchName = branchPrefix + slugify(`${id}-${title}`);
-  const branchCreated = await createWorkingBranch(
-    base_branch,
-    workingBranchName
-  );
+
+  const { working_branch } = await prompts({
+    type: "text",
+    name: "working_branch",
+    message: "Branch name ?",
+    initial: workingBranchName
+  });
+
+  const branchCreated = await createWorkingBranch(base_branch, working_branch);
   if (!branchCreated) {
     return new CommandResult(
       "error",
-      `Cannot create working branch "${workingBranchName}" from "${base_branch}".`
+      `Cannot create working branch "${working_branch}" from "${base_branch}".`
     );
   }
 
@@ -90,7 +105,7 @@ command.execute = async () => {
     "success",
     JSON.stringify(
       {
-        "Working branch": workingBranchName,
+        "Working branch": working_branch,
         "Merge request": mergeRequest.web_url
       },
       null,
