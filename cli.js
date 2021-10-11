@@ -14,7 +14,12 @@ const args = yargs(process.argv.slice(2)).argv;
     return;
   }
 
-  const result = await command.execute();
+  const inputs = args._.slice(1);
+
+  // removing "$0" and "_" keys from args object to produce the options object
+  const { $0, _, ...options } = args;
+
+  const result = await command.execute({ inputs, options });
   const line = "-".repeat(process.stdout.columns);
   const headerBg = result.isSuccess() ? "bgGreen" : "bgRed";
   const headeColor = result.isSuccess() ? "black" : "white";

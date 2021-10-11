@@ -14,8 +14,10 @@ const command = new Command(
   "Create working branch and the corresponding merge request from a Redmine ticket."
 );
 
-command.execute = async () => {
+command.execute = async ({ inputs, options }) => {
   const { redmine_api_key, gitlab_api_token } = store.all;
+
+  let [ticket_id] = inputs;
 
   // check user configuration
   if (!redmine_api_key || !gitlab_api_token) {
@@ -25,12 +27,15 @@ command.execute = async () => {
     );
   }
 
-  // ask ticket id + load the ticket
-  const { ticket_id } = await prompts({
-    type: "number",
-    name: "ticket_id",
-    message: "Redmine ticket ID"
-  });
+  if (!ticket_id) {
+    // ask ticket id + load the ticket
+    let answers = await prompts({
+      type: "number",
+      name: "ticket_id",
+      message: "Redmine ticket ID"
+    });
+    ticket_id = answers.ticket_id;
+  }
 
   const ticket = await loadTicket(ticket_id, redmine_api_key);
   if (!ticket) {
@@ -65,7 +70,6 @@ command.execute = async () => {
     initial: 0
   });
 
-  // create working branch
   const { subject: title, id, tracker } = ticket.issue;
   const branchType = trackersMap[tracker.name];
   const branchPrefix = branchType ? `${branchType}/` : "";
