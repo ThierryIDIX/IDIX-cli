@@ -1,6 +1,7 @@
 import prompts from "prompts";
 import chalk from "chalk";
 import axios from "axios";
+import { Spinner } from "cli-spinner";
 import { spawn } from "promisify-child-process";
 import { Command, CommandResult, store } from "../core/index.js";
 import { slugify } from "../utils.js";
@@ -14,6 +15,9 @@ const command = new Command(
   "ticket",
   "Create working branch and the corresponding merge request from a Redmine ticket."
 );
+
+const spinner = new Spinner();
+spinner.setSpinnerString(18);
 
 command.execute = async ({ inputs, options }) => {
   const { redmine_api_key, gitlab_api_token } = store.all;
@@ -92,7 +96,7 @@ command.execute = async ({ inputs, options }) => {
   }
 
   const mergeRequestTitle = `Draft: #${id} ${title}`;
-  const mergeRequest = await createMergeReques(
+  const mergeRequest = await createMergeRequest(
     gitlab_api_token,
     gitlab_path,
     workingBranchName,
@@ -117,6 +121,8 @@ command.execute = async ({ inputs, options }) => {
 export default command;
 
 async function loadTicket(id, apiKey) {
+  spinner.setSpinnerTitle("Loading ticket infos...");
+  spinner.start();
   try {
     return (
       await axios.get(`https://redmine.idix.fr/issues/${id}.json`, {
@@ -128,6 +134,9 @@ async function loadTicket(id, apiKey) {
   } catch (error) {
     console.error("loadTicket", error);
     return null;
+  } finally {
+    spinner.stop();
+    process.stdout.write("\n");
   }
 }
 
@@ -160,6 +169,9 @@ async function determineBaseBranch() {
 }
 
 async function createWorkingBranch(baseBranch, name) {
+  spinner.setSpinnerTitle("Creating new branch...");
+  spinner.start();
+
   const options = {
     encoding: "utf8"
   };
@@ -175,16 +187,21 @@ async function createWorkingBranch(baseBranch, name) {
   } catch (error) {
     console.error("createWorkingBranch", error);
     return false;
+  } finally {
+    spinner.stop();
+    process.stdout.write("\n");
   }
 }
 
-async function createMergeReques(
+async function createMergeRequest(
   apiKey,
   projectPath,
   sourceBranch,
   targetBranch,
   title
 ) {
+  spinner.setSpinnerTitle("Creating merge request...");
+  spinner.start();
   const path = encodeURIComponent(projectPath);
   try {
     return (
@@ -204,7 +221,10 @@ async function createMergeReques(
       )
     ).data;
   } catch (error) {
-    console.error("createMergeReques", error);
+    console.error("createMergeRequest", error);
     return null;
+  } finally {
+    spinner.stop();
+    process.stdout.write("\n");
   }
 }
