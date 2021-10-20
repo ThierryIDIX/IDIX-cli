@@ -58,20 +58,23 @@ command.execute = async ({ inputs, options }) => {
 
   // determine base branch
   const guessedBranch = await determineBaseBranch();
+  const branchChoices = [
+    {
+      title: "master",
+      value: "master"
+    }
+  ];
+  if (guessedBranch) {
+    branchChoices.unshift({
+      title: guessedBranch,
+      value: guessedBranch
+    });
+  }
   const { base_branch } = await prompts({
     type: "select",
     name: "base_branch",
     message: "Git base branch",
-    choices: [
-      {
-        title: guessedBranch,
-        value: guessedBranch
-      },
-      {
-        title: "master",
-        value: "master"
-      }
-    ],
+    choices: branchChoices,
     initial: 0
   });
 
@@ -154,14 +157,17 @@ async function determineGitlabPath() {
 }
 
 async function determineBaseBranch() {
-  let branch = "master";
+  let branch = null;
   try {
     const options =
       "branch --remotes --list origin*release-* --sort=-creatordate";
-    const { stdout } = await spawn("git", options.split(" "), {
+    let { stdout } = await spawn("git", options.split(" "), {
       encoding: "utf8"
     });
-    branch = stdout.trim().split("origin/")[1].replace(/\n/g, "").trim();
+    stdout = stdout.trim();
+    if (stdout) {
+      branch = stdout.split("origin/")[1].replace(/\n/g, "").trim();
+    }
   } catch (error) {
     console.error("determineBaseBranch", error);
   }
